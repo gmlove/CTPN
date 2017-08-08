@@ -38,6 +38,7 @@ RUN pip install packaging
 
 RUN cd python && for req in $(cat requirements.txt) pydot; do pip install $req; done && cd ..
 RUN git clone https://github.com/NVIDIA/nccl.git
+RUN cd nccl && cat Makefile | sed '/.*compute_6.*/d' | sed 's/\(.*=sm_52 \).*/\1/' > Makefile.1 && mv -fv Makefile.1 Makefile
 RUN apt-get update && apt-get install -y --no-install-recommends \
     cuda=7.0-28
 WORKDIR /
@@ -88,3 +89,5 @@ RUN cd ~ && \
 
 WORKDIR $CTPN_ROOT/CTPN
 RUN make
+
+RUN pip install --upgrade numpy
